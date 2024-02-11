@@ -7,8 +7,12 @@ import json
 from collections import defaultdict
 from dateutil import parser
 from dateutil import tz
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})  # Simple in-memory cache
 
 api_key="c72ee226-6375-4071-a205-34bd469d6c57"

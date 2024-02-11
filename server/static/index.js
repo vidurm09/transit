@@ -43,7 +43,9 @@ function renderData(dataList) {
 }
 
 function updateData() {
-    fetch("/updateData")
+	const currentUrl = `${window.location.origin}${window.location.pathname}`;
+	const fullUrl = `${currentUrl}/updateData`;
+	fetch(fullUrl)
         .then(response => response.json())
         .then(data => {
             renderData(data);

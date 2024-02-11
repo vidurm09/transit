@@ -1,0 +1,10 @@
+[Unit]
+Description=Transit Server
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/home/vidur/projects/transit/server
+ExecStart=/home/vidur/projects/transit/server/.venv/bin/gunicorn -w 1 -b 0.0.0.0 "server:app" &
+
+[Install]
+WantedBy=multi-user.target
