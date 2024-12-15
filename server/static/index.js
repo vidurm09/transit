@@ -24,7 +24,7 @@ function renderData(dataList) {
         busDetails.classList.add("bus-details");
         // Display bus line, minutes until arrival, and stop point name
         busDetails.innerHTML = `
-            <h2>${stop.busLine} <span class="minsUntilArrival">(${minutesUntilArrival > 0 ? minutesUntilArrival : 0} min)</span></h2>
+            <h2>${stop.busLine} <span class="minsUntilArrival">(${minutesUntilArrival > 0 ? minutesUntilArrival : 0} min) ${stop.destinationName}</span></h2>
             <small>${stop.stopPointName}</small>
         `;
 

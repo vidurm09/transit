@@ -45,15 +45,19 @@ def fetch_data_from_api():
     r = requests.get(f'http://api.511.org/transit/StopMonitoring?agency=SF&api_key={api_key}')
     decoded_data=r.text.encode().decode('utf-8-sig') 
     data = json.loads(decoded_data)
-    desiredStopIds = ["14869", "16017", "14303", "15186", "16598", "15997"]
+    # desiredStopIds = ["14869", "16017", "14303", "15186", "16598", "15997"]
+    desiredStopIds = ["14950", "14424", "14423", "14951", "17318", "17252", "14620", "14618"]
 
     allStops = data['ServiceDelivery']['StopMonitoringDelivery']['MonitoredStopVisit']
 
-    filteredStops = [{'busLine': x['MonitoredVehicleJourney']['LineRef'],
+    filteredStops = [
+        {
+            'busLine': x['MonitoredVehicleJourney']['LineRef'],
             'estimatedArrivalTime': x['MonitoredVehicleJourney']['MonitoredCall']['ExpectedArrivalTime'],
             'stopPointName': x['MonitoredVehicleJourney']['MonitoredCall']['StopPointName'],
-            'stopId': x['MonitoringRef'] 
-            } for x in allStops if x['MonitoringRef'] in desiredStopIds]
+            'stopId': x['MonitoringRef'] ,
+            'destinationName': x['MonitoredVehicleJourney']['MonitoredCall']['DestinationDisplay'],
+        } for x in allStops if x['MonitoringRef'] in desiredStopIds]
 
     grouped_data = defaultdict(lambda: defaultdict(list))
 
@@ -64,6 +68,7 @@ def fetch_data_from_api():
         grouped_data[key]['stopId'] = stop_id
         grouped_data[key]['stopPointName'] = item['stopPointName']
         grouped_data[key]['busLine'] = bus_line
+        grouped_data[key]['destinationName'] = item['destinationName']
         grouped_data[key]['estimatedArrivalTimes'].append(item['estimatedArrivalTime'])
 
     # Convert defaultdict to list of dictionary objects
@@ -73,7 +78,8 @@ def fetch_data_from_api():
             "stopId": data['stopId'],
             "stopPointName": data['stopPointName'],
             "busLine": data['busLine'],
-            "estimatedArrivalTimes": sorted(data['estimatedArrivalTimes'], reverse=False)
+            "estimatedArrivalTimes": sorted(data['estimatedArrivalTimes'], reverse=False),
+            "destinationName": data['destinationName']
         })
     sorted_data = sorted(formatted_data, key=lambda x: (x['busLine'], x['stopId']))
     return sorted_data
